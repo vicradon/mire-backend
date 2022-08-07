@@ -1,6 +1,16 @@
 require("dotenv").config();
-const { DB_DIALECT, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } =
-  process.env;
+const parseDbUrl = require("parse-database-url");
+
+const {
+  DB_DIALECT,
+  DB_HOST,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_USER,
+  CLEARDB_DATABASE_URL,
+} = process.env;
+
+const prodDBDetails = parseDbUrl(CLEARDB_DATABASE_URL);
 
 const config = {
   development: {
@@ -18,11 +28,11 @@ const config = {
     dialect: DB_DIALECT,
   },
   production: {
-    username: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
-    host: DB_HOST,
-    dialect: DB_DIALECT,
+    username: prodDBDetails.user,
+    password: prodDBDetails.password,
+    database: prodDBDetails.database,
+    host: prodDBDetails.host,
+    dialect: prodDBDetails.driver,
   },
 };
 
