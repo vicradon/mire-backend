@@ -7,7 +7,7 @@ const {
   DB_NAME,
   DB_PASSWORD,
   DB_USER,
-  CLEARDB_DATABASE_URL,
+  CLEARDB_DATABASE_URL = "",
 } = process.env;
 
 const prodDBDetails = parseDbUrl(CLEARDB_DATABASE_URL);
