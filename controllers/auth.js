@@ -1,26 +1,31 @@
 const Joi = require("joi");
-const { User } = require("../../models");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
-const { NotFound } = require("../../utils/error");
+const { NotFound } = require("../utils/error");
 const { default: axios } = require("axios");
 
 class AuthController {
-  async signup(req, res) {
+  async register(req, res) {
     const schema = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(30).required(),
       phone_number: Joi.string().required(),
+      bvn: Joi.string().required(),
     });
     try {
-      const { email, password, phone_number } = await schema.validateAsync({
-        email: req.body.email,
-        password: req.body.password,
-        phone_number: req.body.phone_number,
-      });
+      const { email, password, phone_number, bvn } = await schema.validateAsync(
+        {
+          email: req.body.email,
+          password: req.body.password,
+          phone_number: req.body.phone_number,
+          bvn: req.body.bvn,
+        }
+      );
       const user = User.build({
         email,
         password,
         phone_number: phone_number,
+        bvn,
       });
       await user.save();
 
@@ -37,7 +42,7 @@ class AuthController {
     } catch (error) {
       if (error.name === "SequelizeUniqueConstraintError") {
         return res.status(400).json({
-          message: "User with this email already exists",
+          message: "User with this email or phone number already exists",
           status: "error",
         });
       }
@@ -69,28 +74,28 @@ class AuthController {
         });
       }
 
-      const responsebody = await axios({
-        url: "https://rgw.k8s.apis.ng/centric-platforms/uat/enaira-user/GetUserDetailsByPhone",
-        method: "POST",
-        data: {
-          phone_number: "08056064768",
-          user_type: "USER",
-          channel_code: "APISNG",
-        },
-        headers: {
-          ClientId: "3add9208e43c180fc0c5379a2283ea14",
-          // ClientSecret: "717e3c9c4622157a0c2be95fe2ec2adb",
-          // verify: "false",
-        },
-        rejectUnauthorized: false,
-      });
+      // const responsebody = await axios({
+      //   url: "https://rgw.k8s.apis.ng/centric-platforms/uat/enaira-user/GetUserDetailsByPhone",
+      //   method: "POST",
+      //   data: {
+      //     phone_number: "08056064768",
+      //     user_type: "USER",
+      //     channel_code: "APISNG",
+      //   },
+      //   headers: {
+      //     ClientId: "3add9208e43c180fc0c5379a2283ea14",
+      //     // ClientSecret: "717e3c9c4622157a0c2be95fe2ec2adb",
+      //     // verify: "false",
+      //   },
+      //   rejectUnauthorized: false,
+      // });
 
       const jwtValue = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1d",
       });
 
       return res.status(200).json({
-        external: responsebody.data,
+        // external: responsebody.data,
         token: jwtValue,
         status: "success",
         message: "logged in successfully",

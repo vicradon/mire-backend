@@ -16,6 +16,14 @@ module.exports = {
       },
       phone_number: {
         type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      bvn: {
+        type: Sequelize.STRING,
+      },
+      usd_account_number: {
+        type: Sequelize.STRING,
       },
       email: {
         type: Sequelize.STRING,

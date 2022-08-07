@@ -24,4 +24,55 @@ Focus on two types of transactions
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
 
+```sql
+DROP DATABASE IF EXISTS mire_dev;
+CREATE DATABASE mire_dev;
+```
+
+```sh
 npx sequelize-cli model:generate --name Transaction --attributes amount:string,user_id:string
+```
+
+## Transaction request
+
+```json
+{
+  "amount": "100",
+  "currency": "USD",
+  "receiver_wallet_alias": "123456789"
+}
+```
+
+## Create Virtual Account
+
+```json
+{
+  "user_id": "123456789",
+  "currency": "USD"
+}
+```
+
+## Check Virtual Account Balance
+
+```json
+{
+  "account_id": "123456789"
+}
+```
+
+## Validate Receiver Wallet Alias
+
+```json
+{
+  "wallet_alias": "123456789"
+}
+```
+
+## Send ENaira to Receiver Wallet
+
+```json
+{
+  "amount": "43000",
+  "receiver_wallet_alias": "123456789"
+}
+```

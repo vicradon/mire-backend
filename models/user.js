@@ -18,7 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       first_name: DataTypes.STRING,
       last_name: DataTypes.STRING,
       wallet_id: DataTypes.STRING,
-      phone_number: DataTypes.STRING,
+      bvn: DataTypes.STRING,
+      usd_account_number: {
+        type: DataTypes.STRING,
+      },
+      phone_number: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
       email: {
         type: DataTypes.STRING,
         unique: true,

@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { User } = require("../../models");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 
 class UserController {
