@@ -85,6 +85,35 @@ class TransactionController {
       return res.status(500).json({ message: error.message, status: "error" });
     }
   }
+
+  // verify funds transfer
+  async verifyFundsTransfer(req, res) {
+    try {
+      const schema = Joi.object({
+        transaction_reference: Joi.string().required(),
+      });
+      const { transaction_reference } = await schema.validateAsync(req.body);
+
+      const transaction = await Transaction.findOne({
+        where: { reference: transaction_reference },
+      });
+
+      await http.post("/breezeapi/v1/VerifyFundsTransfer", {
+        user_id: req.user_id,
+        merchant_code: "M1000005",
+        product_code: "ESC2",
+        currency: "USD",
+        transaction_reference,
+      });
+
+      return res.status(200).json({
+        status: "success",
+        message: "Funds transfer verified successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message, status: "error" });
+    }
+  }
 }
 
 module.exports = new TransactionController();

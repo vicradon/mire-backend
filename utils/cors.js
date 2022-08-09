@@ -1,6 +1,10 @@
 const cors = require("cors");
 
-const allowlist = ["http://localhost:3000", "http://mire-five.vercel.app"];
+const allowlist = [
+  "http://localhost:3000",
+  "http://mire-five.vercel.app",
+  "https://mire-five.vercel.app",
+];
 
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
