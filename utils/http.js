@@ -5,6 +5,7 @@ const http = axios.create({
   baseURL: process.env.APIS_NG_URL,
   proxyHeaders: false,
   credentials: false,
+  timeout: 30000,
 });
 
 http.defaults.headers.common["ClientId"] = process.env.CLIENT_ID;
