@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && nodemon",
-    "migrate": "export NODE_ENV=production && npx sequelize db:migrate"
+    "migrate": "export NODE_ENV=production && echo $CLEARDB_DATABASE_URL & export DB_DIALECT=mysql && npx sequelize db:migrate"
   },
   "keywords": [],
   "author": "",
