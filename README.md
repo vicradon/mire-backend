@@ -25,8 +25,11 @@ export NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
 
 ```sql
-DROP DATABASE IF EXISTS mire_dev;
-CREATE DATABASE mire_dev;
+DROP DATABASE IF EXISTS mire_dev; CREATE DATABASE mire_dev; use mire_dev;
+```
+
+```bash
+npx sequelize db:migrate
 ```
 
 ```sh

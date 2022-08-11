@@ -8,8 +8,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      amount: {
+      amount_tendered: {
+        type: Sequelize.FLOAT.UNSIGNED,
+      },
+      amount_received: {
+        type: Sequelize.FLOAT.UNSIGNED,
+      },
+      status: {
         type: Sequelize.STRING,
+      },
+      fee: {
+        type: Sequelize.FLOAT.UNSIGNED,
       },
       receiver_wallet_alias: {
         type: Sequelize.STRING,

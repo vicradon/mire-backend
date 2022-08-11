@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Transaction.init(
     {
-      amount: DataTypes.STRING,
+      amount_tendered: DataTypes.FLOAT.UNSIGNED,
+      amount_received: DataTypes.FLOAT.UNSIGNED,
+      status: DataTypes.STRING,
+      fee: DataTypes.FLOAT.UNSIGNED,
       receiver_wallet_alias: DataTypes.STRING,
       reference: DataTypes.STRING,
       UserId: {

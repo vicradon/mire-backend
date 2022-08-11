@@ -50,7 +50,6 @@ const getUSDAccountDetails = async (user, transaction) => {
   );
 
   const responseData = createUserAccountResponse.data.response_data;
-  console.log(responseData);
 
   const virtual_account = await VirtualAccount.build({
     account_number: responseData.wallet_id,
@@ -80,7 +79,8 @@ class TransactionController {
       const user = await User.findByPk(req.user_id);
 
       const transaction = await Transaction.build({
-        amount,
+        amount_tendered: amount,
+        status: "pending",
         currency,
         receiver_wallet_alias,
         reference: uuid(),
@@ -89,19 +89,36 @@ class TransactionController {
 
       await transaction.save();
 
-      console.log("before creation");
       const virtual_account_details = await getUSDAccountDetails(
         user,
         transaction
       );
-
-      console.log(virtual_account_details);
 
       return res.status(201).json({
         virtual_account_details,
         transaction,
         status: "success",
         message: "Created transaction successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message, status: "error" });
+    }
+  }
+
+  async getUserTransactions(req, res) {
+    try {
+      const user = await User.findByPk(req.user_id);
+
+      const transactions = await Transaction.findAll({
+        where: {
+          UserId: user.id,
+        },
+      });
+
+      return res.status(200).json({
+        transactions,
+        status: "success",
+        message: "Returned user transactions successfully",
       });
     } catch (error) {
       return res.status(500).json({ message: error.message, status: "error" });
