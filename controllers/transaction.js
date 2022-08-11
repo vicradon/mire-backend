@@ -55,7 +55,7 @@ const getUSDAccountDetails = async (user, transaction) => {
   const virtual_account = await VirtualAccount.build({
     account_number: responseData.wallet_id,
     UserId: user.id,
-    account_name: `${responseData.wallet_name} USD Account`,
+    account_name: responseData.wallet_name,
     account_balance: 0,
     account_denomination: responseData.currency,
   });
@@ -89,10 +89,13 @@ class TransactionController {
 
       await transaction.save();
 
+      console.log("before creation");
       const virtual_account_details = await getUSDAccountDetails(
         user,
         transaction
       );
+
+      console.log(virtual_account_details);
 
       return res.status(201).json({
         virtual_account_details,
