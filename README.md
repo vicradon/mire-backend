@@ -31,6 +31,11 @@ CREATE DATABASE mire_dev;
 
 ```sh
 npx sequelize-cli model:generate --name Transaction --attributes amount:string,user_id:string
+
+```
+
+```sh
+
 ```
 
 ## Transaction request

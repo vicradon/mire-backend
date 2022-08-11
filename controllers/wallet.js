@@ -10,7 +10,7 @@ class WalletController {
       return res.status(200).json({
         user,
         status: "success",
-        message: "Returned user details successfully",
+        message: "Returned wallet details successfully",
       });
     } catch (error) {
       return res.status(500).json({ message: error.message, status: "error" });

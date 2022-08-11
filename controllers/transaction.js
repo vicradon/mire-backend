@@ -1,13 +1,20 @@
 const Joi = require("joi");
-const { User, Transaction } = require("../models");
+const { User, Transaction, VirtualAccount } = require("../models");
 const { v4: uuid } = require("uuid");
 const http = require("../utils/http");
 
-const getUSDAccountNumber = async (user, transaction) => {
-  console.log(user.usd_account_number);
-  if (user.usd_account_number) {
-    return user.usd_account_number;
+const getUSDAccountDetails = async (user, transaction) => {
+  const virtual_account_detail = await VirtualAccount.findOne({
+    where: {
+      UserId: user.id,
+      account_denomination: "USD",
+    },
+  });
+
+  if (virtual_account_detail) {
+    return virtual_account_detail;
   }
+
   const bvnChallengeResponse = await http.post("/breezeapi/v1/ChallengeBVN", {
     channel_code: "APIC",
     bvn: user.bvn,
@@ -42,7 +49,19 @@ const getUSDAccountNumber = async (user, transaction) => {
     }
   );
 
-  return createUserAccountResponse.data.response_data.wallet_id;
+  const responseData = createUserAccountResponse.data.response_data;
+  console.log(responseData);
+
+  const virtual_account = await VirtualAccount.build({
+    account_number: responseData.wallet_id,
+    UserId: user.id,
+    account_name: `${responseData.wallet_name} USD Account`,
+    account_balance: 0,
+    account_denomination: responseData.currency,
+  });
+  await virtual_account.save();
+
+  return virtual_account;
 };
 
 class TransactionController {
@@ -70,13 +89,13 @@ class TransactionController {
 
       await transaction.save();
 
-      const usd_account_number = await getUSDAccountNumber(user, transaction);
-
-      user.usd_account_number = usd_account_number;
-      await user.save();
+      const virtual_account_details = await getUSDAccountDetails(
+        user,
+        transaction
+      );
 
       return res.status(201).json({
-        usd_account_number,
+        virtual_account_details,
         transaction,
         status: "success",
         message: "Created transaction successfully",
